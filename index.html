@@ -14,7 +14,7 @@
     <button id="show-text-btn" style="display:none;">Show Text</button>
     <video id="video" width="640" height="480" style="display:none;"></video>
     <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-    <div id="ocr-result"></div>
+    <textarea id="ocr-result" readonly style="width: 100%; height: 300px;"></textarea>
 
     <script>
         const openCameraButton = document.getElementById('open-camera-btn');
@@ -54,7 +54,7 @@
         });
 
         showTextButton.addEventListener('click', async () => {
-            // Clear everything on the window except for the ocr-result div
+            // Clear everything on the window except for the ocr-result textarea
             while (document.body.firstChild !== ocrResult) {
                 document.body.removeChild(document.body.firstChild);
             }
@@ -62,8 +62,8 @@
             // Recognize text using Tesseract.js
             const recognizedText = await tesseract.recognize(capturedImageDataURL, 'eng', { logger: m => console.log(m) });
 
-            // Display the recognized text
-            ocrResult.innerText = recognizedText.text;
+            // Display the recognized text in the textarea
+            ocrResult.value = recognizedText.text;
         });
 
         captureTextButton.addEventListener('click', async () => {
@@ -74,8 +74,8 @@
             // Recognize text using Tesseract.js
             const recognizedText = await tesseract.recognize(capturedImageDataURL, 'eng', { logger: m => console.log(m) });
 
-            // Display the recognized text
-            ocrResult.innerText = recognizedText.text;
+            // Display the recognized text in the textarea
+            ocrResult.value = recognizedText.text;
             showTextButton.style.display = 'block';
         });
     </script>
