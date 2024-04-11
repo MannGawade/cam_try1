@@ -26,7 +26,7 @@
         const ocrResult = document.getElementById('ocr-result');
         let capturedImageDataURL;
 
-        async function openCameraPermission() {
+        openCameraButton.addEventListener('click', async () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 video.srcObject = stream;
@@ -37,11 +37,7 @@
             } catch (error) {
                 console.error("Error accessing the camera:", error);
             }
-        }
-        openCameraButton.addEventListener('click', async () => {
-            openCameraPermission()
         });
-        openCameraPermission()
 
         captureButton.addEventListener('click', () => {
             const context = canvas.getContext('2d');
@@ -50,6 +46,19 @@
             const capturedImage = new Image();
             capturedImage.src = capturedImageDataURL;
             document.body.appendChild(capturedImage);
+            showTextButton.style.display = 'block';
+        });
+
+        captureTextButton.addEventListener('click', async () => {
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            capturedImageDataURL = canvas.toDataURL('image/png');
+
+            // Recognize text using Tesseract.js
+            const recognizedText = await tesseract.recognize(capturedImageDataURL, 'eng', { logger: m => console.log(m) });
+
+            // Display the recognized text in the textarea
+            ocrResult.value = recognizedText.text;
             showTextButton.style.display = 'block';
         });
 
@@ -64,19 +73,6 @@
 
             // Display the recognized text in the textarea
             ocrResult.value = recognizedText.text;
-        });
-
-        captureTextButton.addEventListener('click', async () => {
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            capturedImageDataURL = canvas.toDataURL('image/png');
-
-            // Recognize text using Tesseract.js
-            const recognizedText = await tesseract.recognize(capturedImageDataURL, 'eng', { logger: m => console.log(m) });
-
-            // Display the recognized text in the textarea
-            ocrResult.value = recognizedText.text;
-            showTextButton.style.display = 'block';
         });
     </script>
 </body>
