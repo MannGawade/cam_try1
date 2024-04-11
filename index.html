@@ -54,6 +54,11 @@
         });
 
         showTextButton.addEventListener('click', async () => {
+            // Clear everything on the window except for the ocr-result div
+            while (document.body.firstChild !== ocrResult) {
+                document.body.removeChild(document.body.firstChild);
+            }
+
             // Recognize text using Tesseract.js
             const recognizedText = await tesseract.recognize(capturedImageDataURL, 'eng', { logger: m => console.log(m) });
 
